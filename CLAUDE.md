@@ -4,6 +4,15 @@ Shared CORS proxy worker for all Omnia Housing PWAs. Sits between browser apps a
 
 **Worker URL:** https://omnia-mcp-proxy.liveomnia.workers.dev
 **Wrangler name:** `omnia-mcp-proxy`
+**Repo:** https://github.com/samirpatel-cloud/omnia-mcp-proxy
+
+## Omnia Platform — Repo Map
+
+| Repo | Purpose | Live URL |
+|------|---------|----------|
+| [`OmniaDashboard`](https://github.com/samirpatel-cloud/OmniaDashboard) | Executive weekly stats PWA | https://weeklystats.liveomnia.com |
+| [`omnia-app`](https://github.com/samirpatel-cloud/omnia-app) | Tenants + Compliance unified PWA | https://tenants.liveomnia.com |
+| [`omnia-mcp-proxy`](https://github.com/samirpatel-cloud/omnia-mcp-proxy) | Shared Cloudflare Worker (this repo) | https://omnia-mcp-proxy.liveomnia.workers.dev |
 
 ## Routes
 
