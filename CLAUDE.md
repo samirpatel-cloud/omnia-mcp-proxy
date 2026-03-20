@@ -52,7 +52,7 @@ Shared CORS proxy worker for all Omnia Housing PWAs. Sits between browser apps a
 Allowed origins are hardcoded in `index.js`:
 - `localhost:5173-5176` (dev)
 - `*.omnia-tenants.pages.dev`, `tenants.liveomnia.com`
-- `*.omnia-app.pages.dev`, `omnia-app.pages.dev`, `omniaapp.liveomnia.com`
+- `*.omnia-app.pages.dev`, `omnia-app.pages.dev`, `omniaapp.liveomnia.com`, `omnia-app.liveomnia.com`
 - `*.omnia-arrears.pages.dev`, `arrears.liveomnia.com`
 - `*.omnia-dashboard.pages.dev`, `weeklystats.liveomnia.com`
 
