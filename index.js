@@ -21,6 +21,9 @@ export default {
       || origin.endsWith('.omnia-tenants.pages.dev')
       || origin === 'https://omnia-tenants.pages.dev'
       || origin === 'https://tenants.liveomnia.com'
+      || origin.endsWith('.omnia-app.pages.dev')
+      || origin === 'https://omnia-app.pages.dev'
+      || origin === 'https://omniaapp.liveomnia.com'
       || origin.endsWith('.omnia-arrears.pages.dev')
       || origin === 'https://omnia-arrears.pages.dev'
       || origin === 'https://arrears.liveomnia.com'
@@ -31,7 +34,7 @@ export default {
     const corsHeaders = {
       'Access-Control-Allow-Origin': allowed ? origin : '',
       'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type, Accept, Mcp-Session-Id',
+      'Access-Control-Allow-Headers': 'Content-Type, Accept, Mcp-Session-Id, X-Api-Key',
       'Access-Control-Expose-Headers': 'Mcp-Session-Id',
       'Access-Control-Max-Age': '86400',
     };
@@ -223,6 +226,13 @@ ${notesText}`,
     // ── MCP proxy: POST / or /docs ──
     if (request.method !== 'POST') {
       return new Response('Method not allowed', { status: 405, headers: corsHeaders });
+    }
+
+    if (env.API_KEY) {
+      const authHeader = request.headers.get('X-Api-Key') || '';
+      if (authHeader !== env.API_KEY) {
+        return new Response('Unauthorized', { status: 401, headers: corsHeaders });
+      }
     }
 
     const target = url.pathname === '/docs' ? env.DOCS_MCP_TARGET : env.SQL_MCP_TARGET;

@@ -44,15 +44,23 @@ Shared CORS proxy worker for all Omnia Housing PWAs. Sits between browser apps a
 | Secret | Purpose |
 |--------|---------|
 | `ANTHROPIC_API_KEY` | Claude API key for `/summarize` route |
-| `CF_ACCESS_AUD` | (optional) Cloudflare Access audience tag for JWT verification |
+| `CF_ACCESS_AUD` | (optional) Cloudflare Access audience tag for JWT verification on `/summarize` |
+| `API_KEY` | Shared secret required on all SQL/Docs requests via `X-Api-Key` header |
 
 ## CORS
 
 Allowed origins are hardcoded in `index.js`:
 - `localhost:5173-5176` (dev)
 - `*.omnia-tenants.pages.dev`, `tenants.liveomnia.com`
+- `*.omnia-app.pages.dev`, `omnia-app.pages.dev`, `omniaapp.liveomnia.com`
 - `*.omnia-arrears.pages.dev`, `arrears.liveomnia.com`
 - `*.omnia-dashboard.pages.dev`, `weeklystats.liveomnia.com`
+
+## API Key Authentication
+
+SQL (`/`) and Docs (`/docs`) routes require an `X-Api-Key` header matching the `API_KEY` secret.
+Requests without the correct key receive `401 Unauthorized`.
+Dev mode (localhost) skips this check — the key is only sent in production builds.
 
 ## /summarize Route Details
 
