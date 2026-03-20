@@ -11,7 +11,7 @@ Shared CORS proxy worker for all Omnia Housing PWAs. Sits between browser apps a
 | Repo | Purpose | Live URL |
 |------|---------|----------|
 | [`OmniaDashboard`](https://github.com/samirpatel-cloud/OmniaDashboard) | Executive weekly stats PWA | https://weeklystats.liveomnia.com |
-| [`omnia-app`](https://github.com/samirpatel-cloud/omnia-app) | Tenants + Compliance unified PWA | https://tenants.liveomnia.com |
+| [`omnia-app`](https://github.com/samirpatel-cloud/omnia-app) | Tenants + Compliance unified PWA | https://omniaapp.liveomnia.com |
 | [`omnia-mcp-proxy`](https://github.com/samirpatel-cloud/omnia-mcp-proxy) | Shared Cloudflare Worker (this repo) | https://omnia-mcp-proxy.liveomnia.workers.dev |
 
 ## Routes
@@ -28,7 +28,7 @@ Shared CORS proxy worker for all Omnia Housing PWAs. Sits between browser apps a
 | App | Repo | Live URL |
 |-----|------|----------|
 | **Omnia Dashboard** | `OmniaDashboard` | https://weeklystats.liveomnia.com |
-| **Omnia App** (Tenants + Compliance) | `omnia-app` | https://tenants.liveomnia.com |
+| **Omnia App** (Tenants + Compliance) | `omnia-app` | https://omniaapp.liveomnia.com |
 
 ## Environment Variables (wrangler.toml)
 
