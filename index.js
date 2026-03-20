@@ -58,7 +58,8 @@ export default {
       if (request.method !== 'GET') {
         return new Response('Method not allowed', { status: 405, headers: corsHeaders });
       }
-      if (!env.ASANA_PAT) {
+      const asanaPat = env.ASANA_PAT_SECRET || env.ASANA_PAT;
+      if (!asanaPat) {
         return new Response('Asana PAT not configured', { status: 500, headers: corsHeaders });
       }
 
@@ -72,7 +73,7 @@ export default {
       const resp = await fetch(asanaUrl.toString(), {
         method: 'GET',
         headers: {
-          'Authorization': `Bearer ${env.ASANA_PAT}`,
+          'Authorization': `Bearer ${asanaPat}`,
           'Accept': 'application/json',
         },
       });
@@ -237,7 +238,9 @@ ${notesText}`,
       }
     }
 
-    const target = url.pathname === '/docs' ? env.DOCS_MCP_TARGET : env.SQL_MCP_TARGET;
+    const sqlTarget = env.SQL_MCP_TARGET || `${env.SQL_MCP_BASE}?key=${env.SQL_MCP_KEY}`;
+    const docsTarget = env.DOCS_MCP_TARGET || `${env.DOCS_MCP_BASE}?key=${env.DOCS_MCP_KEY}`;
+    const target = url.pathname === '/docs' ? docsTarget : sqlTarget;
 
     if (!target) {
       return new Response('MCP target not configured', { status: 500, headers: corsHeaders });

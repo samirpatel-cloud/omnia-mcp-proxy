@@ -3,7 +3,10 @@ main = "index.js"
 compatibility_date = "2024-11-01"
 
 [vars]
-SQL_MCP_TARGET = "https://mcp-v3c0-9f2b7x4k8m1p-sql.liveomnia.com/mcp?key=15xR7kP2mN9vQ4wL8j"
-DOCS_MCP_TARGET = "https://mcp-d0cs-21bac820899f-files.liveomnia.com/mcp?key=l4rkGkJ8FwRVarxI7I5-vC5Xsv5VjpIcKpoZaCNyDXE"
+SQL_MCP_BASE = "https://mcp-v3c0-9f2b7x4k8m1p-sql.liveomnia.com/mcp"
+DOCS_MCP_BASE = "https://mcp-d0cs-21bac820899f-files.liveomnia.com/mcp"
 ALLOWED_ORIGIN = "https://tenants.liveomnia.com"
-ASANA_PAT = "2/22378613246605/1213562438575702:560766c48b6e50c333b9d3cc34235672"
+
+# Secrets (set via wrangler secret put — never stored here):
+# SQL_MCP_KEY, DOCS_MCP_KEY, ASANA_PAT_SECRET, ANTHROPIC_API_KEY,
+# API_KEY, CF_ACCESS_CLIENT_ID, CF_ACCESS_CLIENT_SECRET
