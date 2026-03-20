@@ -30,7 +30,8 @@ export default {
       || origin === 'https://arrears.liveomnia.com'
       || origin.endsWith('.omnia-dashboard.pages.dev')
       || origin === 'https://omnia-dashboard.pages.dev'
-      || origin === 'https://weeklystats.liveomnia.com';
+      || origin === 'https://weeklystats.liveomnia.com'
+      || origin === 'https://dashboard.liveomnia.com';
 
     const corsHeaders = {
       'Access-Control-Allow-Origin': allowed ? origin : '',
