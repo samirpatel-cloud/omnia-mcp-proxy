@@ -24,6 +24,7 @@ export default {
       || origin.endsWith('.omnia-app.pages.dev')
       || origin === 'https://omnia-app.pages.dev'
       || origin === 'https://omniaapp.liveomnia.com'
+      || origin === 'https://omnia-app.liveomnia.com'
       || origin.endsWith('.omnia-arrears.pages.dev')
       || origin === 'https://omnia-arrears.pages.dev'
       || origin === 'https://arrears.liveomnia.com'
