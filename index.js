@@ -1,14 +1,17 @@
 /**
- * Cloudflare Worker — CORS proxy for Omnia MCP + Asana + Claude endpoints.
+ * Cloudflare Worker — CORS proxy for Omnia MCP + Asana + HubSpot + Claude endpoints.
  * Sits between the PWAs and backend services.
  * Routes:
- *   POST /          → SQL MCP
- *   POST /docs      → Docs MCP
- *   POST /summarize → Claude API (Anthropic) for AI note summaries
- *   GET  /asana/*   → Asana REST API (with PAT auth)
+ *   POST /              → SQL MCP
+ *   POST /docs          → Docs MCP
+ *   POST /summarize     → Claude API (Anthropic) for AI note summaries
+ *   GET  /asana/*       → Asana REST API (with PAT auth)
+ *   GET  /hubspot/*     → HubSpot CRM API (contacts)
+ *   POST /hubspot/contacts/search → HubSpot search
  */
 
 const ASANA_API = 'https://app.asana.com/api/1.0';
+const HUBSPOT_API = 'https://api.hubapi.com';
 
 export default {
   async fetch(request, env) {
@@ -31,7 +34,11 @@ export default {
       || origin.endsWith('.omnia-dashboard.pages.dev')
       || origin === 'https://omnia-dashboard.pages.dev'
       || origin === 'https://weeklystats.liveomnia.com'
-      || origin === 'https://dashboard.liveomnia.com';
+      || origin === 'https://dashboard.liveomnia.com'
+      || origin.endsWith('.fsh-lettings.pages.dev')
+      || origin === 'https://fsh-lettings.pages.dev'
+      || origin === 'https://fsh-lettings.liveomnia.com'
+      || origin === 'http://localhost:5190';
 
     const corsHeaders = {
       'Access-Control-Allow-Origin': allowed ? origin : '',
@@ -82,6 +89,71 @@ export default {
       for (const [key, value] of Object.entries(corsHeaders)) {
         responseHeaders.set(key, value);
       }
+
+      return new Response(resp.body, {
+        status: resp.status,
+        headers: responseHeaders,
+      });
+    }
+
+    // ── HubSpot proxy: /hubspot/* → HubSpot CRM API ──
+    if (url.pathname.startsWith('/hubspot/')) {
+      const hubspotToken = env.HUBSPOT_TOKEN;
+      if (!hubspotToken) {
+        return new Response(JSON.stringify({ error: 'HubSpot token not configured' }),
+          { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+      }
+
+      const hubspotPath = url.pathname.replace(/^\/hubspot/, '');
+
+      // POST /hubspot/contacts/search → HubSpot search
+      if (hubspotPath === '/contacts/search' && request.method === 'POST') {
+        const body = await request.text();
+        const resp = await fetch(`${HUBSPOT_API}/crm/v3/objects/contacts/search`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${hubspotToken}`,
+            'Content-Type': 'application/json',
+          },
+          body,
+        });
+
+        const responseHeaders = new Headers(resp.headers);
+        for (const [key, value] of Object.entries(corsHeaders)) {
+          responseHeaders.set(key, value);
+        }
+        responseHeaders.set('Content-Type', 'application/json');
+
+        return new Response(resp.body, {
+          status: resp.status,
+          headers: responseHeaders,
+        });
+      }
+
+      // GET /hubspot/contacts, /hubspot/contacts/:id
+      if (request.method !== 'GET') {
+        return new Response('Method not allowed', { status: 405, headers: corsHeaders });
+      }
+
+      const hubspotUrl = new URL(HUBSPOT_API + '/crm/v3/objects' + hubspotPath);
+      // Pass through query params (properties, limit, after, etc.)
+      for (const [k, v] of url.searchParams) {
+        hubspotUrl.searchParams.set(k, v);
+      }
+
+      const resp = await fetch(hubspotUrl.toString(), {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${hubspotToken}`,
+          'Accept': 'application/json',
+        },
+      });
+
+      const responseHeaders = new Headers(resp.headers);
+      for (const [key, value] of Object.entries(corsHeaders)) {
+        responseHeaders.set(key, value);
+      }
+      responseHeaders.set('Content-Type', 'application/json');
 
       return new Response(resp.body, {
         status: resp.status,

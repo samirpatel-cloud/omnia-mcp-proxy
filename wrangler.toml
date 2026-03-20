@@ -9,4 +9,4 @@ ALLOWED_ORIGIN = "https://tenants.liveomnia.com"
 
 # Secrets (set via wrangler secret put — never stored here):
 # SQL_MCP_KEY, DOCS_MCP_KEY, ASANA_PAT_SECRET, ANTHROPIC_API_KEY,
-# API_KEY, CF_ACCESS_CLIENT_ID, CF_ACCESS_CLIENT_SECRET
+# API_KEY, CF_ACCESS_CLIENT_ID, CF_ACCESS_CLIENT_SECRET, HUBSPOT_TOKEN
