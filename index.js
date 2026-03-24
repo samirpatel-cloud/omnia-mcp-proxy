@@ -35,9 +35,9 @@ export default {
       || origin === 'https://omnia-dashboard.pages.dev'
       || origin === 'https://weeklystats.liveomnia.com'
       || origin === 'https://dashboard.liveomnia.com'
-      || origin.endsWith('.fsh-lettings.pages.dev')
-      || origin === 'https://fsh-lettings.pages.dev'
-      || origin === 'https://fsh-lettings.liveomnia.com'
+      || origin.endsWith('.fsh-viewings.pages.dev')
+      || origin === 'https://fsh-viewings.pages.dev'
+      || origin === 'https://fsh-viewings.liveomnia.com'
       || origin === 'http://localhost:5190'
       || origin === 'http://localhost:5180';
 
@@ -111,6 +111,30 @@ export default {
       if (hubspotPath === '/contacts/search' && request.method === 'POST') {
         const body = await request.text();
         const resp = await fetch(`${HUBSPOT_API}/crm/v3/objects/contacts/search`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${hubspotToken}`,
+            'Content-Type': 'application/json',
+          },
+          body,
+        });
+
+        const responseHeaders = new Headers(resp.headers);
+        for (const [key, value] of Object.entries(corsHeaders)) {
+          responseHeaders.set(key, value);
+        }
+        responseHeaders.set('Content-Type', 'application/json');
+
+        return new Response(resp.body, {
+          status: resp.status,
+          headers: responseHeaders,
+        });
+      }
+
+      // POST /hubspot/notes/search → HubSpot notes search
+      if (hubspotPath === '/notes/search' && request.method === 'POST') {
+        const body = await request.text();
+        const resp = await fetch(`${HUBSPOT_API}/crm/v3/objects/notes/search`, {
           method: 'POST',
           headers: {
             'Authorization': `Bearer ${hubspotToken}`,
