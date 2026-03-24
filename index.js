@@ -38,7 +38,8 @@ export default {
       || origin.endsWith('.fsh-lettings.pages.dev')
       || origin === 'https://fsh-lettings.pages.dev'
       || origin === 'https://fsh-lettings.liveomnia.com'
-      || origin === 'http://localhost:5190';
+      || origin === 'http://localhost:5190'
+      || origin === 'http://localhost:5180';
 
     const corsHeaders = {
       'Access-Control-Allow-Origin': allowed ? origin : '',
@@ -165,19 +166,18 @@ export default {
     if (url.pathname === '/summarize' && request.method === 'POST') {
       const jsonHeaders = { ...corsHeaders, 'Content-Type': 'application/json' };
 
-      // 1. Check ANTHROPIC_API_KEY is configured
+      // 1. API key check (same as SQL/Docs routes)
+      if (env.API_KEY) {
+        const authHeader = request.headers.get('X-Api-Key') || '';
+        if (authHeader !== env.API_KEY) {
+          return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401, headers: jsonHeaders });
+        }
+      }
+
+      // 2. Check ANTHROPIC_API_KEY is configured
       if (!env.ANTHROPIC_API_KEY) {
         return new Response(JSON.stringify({ error: 'Anthropic API key not configured' }),
           { status: 500, headers: jsonHeaders });
-      }
-
-      // 2. Verify Cloudflare Access JWT if configured (production auth)
-      if (env.CF_ACCESS_AUD) {
-        const cfJwt = request.headers.get('Cf-Access-Jwt-Assertion') || '';
-        if (!cfJwt) {
-          return new Response(JSON.stringify({ error: 'Unauthorized — Cloudflare Access token required' }),
-            { status: 401, headers: jsonHeaders });
-        }
       }
 
       // 3. Parse and validate input
